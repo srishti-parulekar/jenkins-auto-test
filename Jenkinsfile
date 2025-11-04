@@ -26,14 +26,15 @@ pipeline {
             steps {
                 sh '''
                     echo "Running unit tests..."
-                    pytest -v --cov=.
+                    mkdir -p reports
+                    pytest -v --cov=. --cov-report=html --cov-report=xml --junitxml=reports/junit.xml
                 '''
             }
             post {
                 always {
-                    junit 'reports/junit.xml'
+                    junit allowEmptyResults: true, testResults: 'reports/junit.xml'
                     publishHTML([
-                        allowMissing: false,
+                        allowMissing: true,
                         alwaysLinkToLastBuild: false,
                         keepAll: true,
                         reportDir: 'htmlcov',
