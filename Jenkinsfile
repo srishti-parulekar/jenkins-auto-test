@@ -50,6 +50,17 @@ pipeline {
                 sh "docker run --rm smartcalc-service:${env.BUILD_ID} python -c 'from app import SmartCalc; calc = SmartCalc(); print(\"Docker test: 2 + 3 =\", calc.add(2, 3)); print(\"Docker test: 10 / 2 =\", calc.divide(10, 2))'"
             }
         }
+
+        stage('Deploy Application') {
+            steps {
+                sh """
+                    docker stop smartcalc-web || true
+                    docker rm smartcalc-web || true
+                    docker run -d -p 5000:5000 --name smartcalc-web smartcalc-service:${env.BUILD_ID}
+                """
+                echo "🚀 Application deployed at http://localhost:5000"
+            }
+        }
     }
     
     post {
