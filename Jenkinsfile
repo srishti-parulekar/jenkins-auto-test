@@ -47,14 +47,14 @@ pipeline {
         
         stage('Test Docker Image') {
             steps {
-                sh '''
-                    docker run --rm smartcalc-service:${BUILD_ID} python -c "
-                    from app import SmartCalc
-                    calc = SmartCalc()
-                    print('Docker test: 2 + 3 =', calc.add(2, 3))
-                    print('Docker test: 10 / 2 =', calc.divide(10, 2))
-                    "
-                '''
+                sh """
+        docker run --rm smartcalc-service:${BUILD_ID} python -c '
+        from app import SmartCalc
+        calc = SmartCalc()
+        print("Docker test: 2 + 3 =", calc.add(2, 3))
+        print("Docker test: 10 / 2 =", calc.divide(10, 2))
+        '
+                """
             }
         }
     }
