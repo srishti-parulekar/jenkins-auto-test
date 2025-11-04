@@ -56,7 +56,7 @@ pipeline {
                 sh """
                     docker stop smartcalc-web || true
                     docker rm smartcalc-web || true
-                    docker run -d -p 5000:5000 --name smartcalc-web smartcalc-service:${env.BUILD_ID}
+                    docker run -d -p 5000:5000 --network host --name smartcalc-web smartcalc-service:${env.BUILD_ID}
                 """
                 echo "🚀 Application deployed at http://localhost:5000"
             }
