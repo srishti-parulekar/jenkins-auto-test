@@ -1,31 +1,214 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCalc Calculator</title>
     <style>
-        body { font-family: Arial; max-width: 500px; margin: 50px auto; padding: 20px; }
-        .calculator { background: #f0f0f0; padding: 30px; border-radius: 10px; }
-        input, select, button { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
-        button { background: #4CAF50; color: white; border: none; cursor: pointer; }
-        button:hover { background: #45a049; }
-        #result { background: white; padding: 15px; margin-top: 20px; border-radius: 5px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .calculator {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 100%;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #4a5568;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            margin-left: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: #f7fafc;
+            color: #2d3748;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
+            padding-right: 45px;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
+            border-radius: 16px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e2e8f0;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #result h2 {
+            color: #2d3748;
+            font-size: 1.8em;
+            font-weight: 700;
+            text-align: center;
+            margin: 0;
+        }
+
+        #result .error {
+            color: #e53e3e;
+            font-weight: 600;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        #result.empty {
+            color: #a0aec0;
+            font-style: italic;
+            justify-content: center;
+        }
+
+        .icon {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 480px) {
+            .calculator {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="calculator">
         <h1>🧮 SmartCalc</h1>
-        <input type="number" id="num1" placeholder="Enter first number" step="any">
-        <input type="number" id="num2" placeholder="Enter second number (if needed)" step="any">
-        <select id="operation">
-            <option value="add">Add (+)</option>
-            <option value="subtract">Subtract (-)</option>
-            <option value="multiply">Multiply (×)</option>
-            <option value="divide">Divide (÷)</option>
-            <option value="power">Power (^)</option>
-            <option value="sqrt">Square Root (√)</option>
-        </select>
+        
+        <div class="input-group">
+            <label for="num1"><span class="icon">①</span> First Number</label>
+            <input type="number" id="num1" placeholder="Enter first number" step="any">
+        </div>
+
+        <div class="input-group">
+            <label for="num2"><span class="icon">②</span> Second Number</label>
+            <input type="number" id="num2" placeholder="Enter second number (if needed)" step="any">
+        </div>
+
+        <div class="input-group">
+            <label for="operation"><span class="icon">⚙️</span> Operation</label>
+            <select id="operation">
+                <option value="add">Add (+)</option>
+                <option value="subtract">Subtract (−)</option>
+                <option value="multiply">Multiply (×)</option>
+                <option value="divide">Divide (÷)</option>
+                <option value="power">Power (^)</option>
+                <option value="sqrt">Square Root (√)</option>
+            </select>
+        </div>
+
         <button onclick="calculate()">Calculate</button>
-        <div id="result"></div>
+        
+        <div id="result" class="empty">
+            Your result will appear here
+        </div>
     </div>
 
     <script>
@@ -42,13 +225,22 @@
             
             const data = await response.json();
             const resultDiv = document.getElementById('result');
+            resultDiv.classList.remove('empty');
             
             if (data.error) {
-                resultDiv.innerHTML = `<span style="color:red">Error: ${data.error}</span>`;
+                resultDiv.innerHTML = `<span class="error">⚠️ Error: ${data.error}</span>`;
             } else {
-                resultDiv.innerHTML = `<h2>Result: ${data.result}</h2>`;
+                resultDiv.innerHTML = `<h2>✨ ${data.result}</h2>`;
             }
         }
+
+        // Add enter key support
+        document.getElementById('num1').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
+        document.getElementById('num2').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
     </script>
 </body>
 </html>
